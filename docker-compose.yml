@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    container_name: erp_postgres_db
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: erp_user
+      POSTGRES_PASSWORD: erp_password
+      POSTGRES_DB: erp_database
+      # UTF-8 support for Arabic text
+      LC_COLLATE: 'en_US.utf8'
+      LC_CTYPE: 'en_US.utf8'
+      LANG: 'en_US.utf8'
+      # Set PostgreSQL to use trust authentication for development (VPN-friendly)
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      # Initialize with UTF-8 and Arabic support
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    command: >
+      postgres -c log_statement=all 
+               -c log_destination=stderr 
+               -c logging_collector=on
+               -c max_connections=200
+
+  backend:
+    build: ./erp-backend
+    container_name: erp_backend
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./erp-backend:/app
+      - /app/node_modules
+    depends_on:
+      - db
+    command: npm run start:dev
+
+volumes:
+  postgres_data:
+    driver: local

@@ -1,0 +1,45 @@
+{
+  "common": {
+    "welcome": "Welcome",
+    "hello": "Hello",
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "search": "Search",
+    "close": "Close"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "vehicles": "Vehicles",
+    "auctions": "Auctions",
+    "shipping": "Shipping", 
+    "accounting": "Accounting",
+    "settings": "Settings",
+    "logout": "Logout"
+  },
+  "accounting": {
+    "title": "Accounting",
+    "chart_of_accounts": "Chart of Accounts",
+    "assets": "Assets",
+    "liabilities": "Liabilities",
+    "equity": "Equity", 
+    "journal_entry": "Journal Entry",
+    "sales_invoice": "Sales Invoice",
+    "income_statement": "Income Statement",
+    "balance_sheet": "Balance Sheet"
+  },
+  "vehicles": {
+    "title": "Vehicles",
+    "vehicle_id": "Vehicle ID",
+    "make": "Make",
+    "model": "Model",
+    "year": "Year",
+    "status": "Status",
+    "purchase_price": "Purchase Price",
+    "shipping_cost": "Shipping Cost",
+    "total_cost": "Total Cost"
+  }
+}

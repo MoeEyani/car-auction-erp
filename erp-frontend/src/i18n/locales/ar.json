@@ -1,0 +1,45 @@
+{
+  "common": {
+    "welcome": "مرحباً بك",
+    "hello": "أهلاً وسهلاً",
+    "loading": "جارٍ التحميل...",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "add": "إضافة",
+    "search": "بحث",
+    "close": "إغلاق"
+  },
+  "navigation": {
+    "dashboard": "لوحة التحكم",
+    "vehicles": "المركبات",
+    "auctions": "المزادات", 
+    "shipping": "الشحن",
+    "accounting": "المحاسبة",
+    "settings": "الإعدادات",
+    "logout": "تسجيل الخروج"
+  },
+  "accounting": {
+    "title": "المحاسبة",
+    "chart_of_accounts": "دليل الحسابات",
+    "assets": "الأصول",
+    "liabilities": "الخصوم", 
+    "equity": "حقوق الملكية",
+    "journal_entry": "قيد يومية",
+    "sales_invoice": "فاتورة مبيعات",
+    "income_statement": "قائمة الدخل",
+    "balance_sheet": "الميزانية العمومية"
+  },
+  "vehicles": {
+    "title": "المركبات",
+    "vehicle_id": "رقم المركبة",
+    "make": "الصنع",
+    "model": "الطراز",
+    "year": "السنة",
+    "status": "الحالة",
+    "purchase_price": "سعر الشراء",
+    "shipping_cost": "تكلفة الشحن",
+    "total_cost": "التكلفة الإجمالية"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "welcome": "مرحباً بك في نظام تخطيط موارد المؤسسة",
+  "success": "تمت العملية بنجاح",
+  "error": "حدث خطأ",
+  "validation": {
+    "required": "هذا الحقل مطلوب",
+    "invalid": "قيمة غير صحيحة",
+    "minLength": "الحد الأدنى للطول هو {{min}} حرف",
+    "maxLength": "الحد الأقصى للطول هو {{max}} حرف"
+  },
+  "auth": {
+    "login": "تسجيل الدخول",
+    "logout": "تسجيل الخروج",
+    "register": "التسجيل",
+    "invalidCredentials": "بيانات اعتماد غير صحيحة",
+    "sessionExpired": "انتهت صلاحية الجلسة"
+  },
+  "erp": {
+    "accounting": {
+      "accounts": "الحسابات",
+      "transactions": "المعاملات",
+      "balance": "الرصيد",
+      "journal": "دفتر اليومية",
+      "ledger": "دفتر الأستاذ",
+      "trial_balance": "ميزان المراجعة",
+      "profit_loss": "الأرباح والخسائر",
+      "balance_sheet": "الميزانية العمومية"
+    },
+    "inventory": {
+      "items": "الأصناف",
+      "stock": "المخزون",
+      "suppliers": "الموردون",
+      "purchases": "المشتريات",
+      "sales": "المبيعات"
+    },
+    "auction": {
+      "vehicles": "المركبات",
+      "auctions": "المزادات",
+      "bids": "العطاءات",
+      "winners": "الفائزون",
+      "lots": "القطع"
+    }
+  }
+}
