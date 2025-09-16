@@ -1,13 +1,16 @@
 # Development Dockerfile for NestJS Backend
-FROM node:18-alpine
+FROM node:20-alpine
 
 WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci
+# Fix SSL certificate issues on Windows
+RUN npm config set strict-ssl false
+
+# Install dependencies with verbose logging
+RUN npm install --force --loglevel verbose
 
 # Copy source code
 COPY . .

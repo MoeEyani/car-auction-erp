@@ -1,0 +1,164 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// =================================================================
+// Section 1: Administrative & Security Models
+// =================================================================
+
+model Branch {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  location  String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  users      User[]
+  costCenters CostCenter[]
+  accounts   Account[]
+  glTransactions GeneralLedgerTransaction[]
+
+  @@map("branches")
+}
+
+model Permission {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique // e.g., 'view_customers', 'edit_vehicle_costs'
+  description String?
+  module      String   // e.g., 'Customers', 'Vehicles', 'Accounting'
+  
+  roles       RolePermission[]
+  userOverrides UserPermissionOverride[]
+
+  @@map("permissions")
+}
+
+model Role {
+  id            Int      @id @default(autoincrement())
+  name          String   @unique
+  description   String?
+  isSystemRole  Boolean  @default(false) // To protect default roles from being deleted
+  createdAt     DateTime @default(now())
+  
+  users       User[]
+  permissions RolePermission[]
+
+  @@map("roles")
+}
+
+model User {
+  id                Int      @id @default(autoincrement())
+  fullName          String
+  username          String   @unique
+  passwordHash      String
+  isActive          Boolean  @default(true)
+  preferredLanguage String   @default("ar")
+  createdAt         DateTime @default(now())
+
+  role       Role?   @relation(fields: [roleId], references: [id], onDelete: Restrict)
+  roleId     Int?
+  branch     Branch? @relation(fields: [branchId], references: [id], onDelete: Restrict)
+  branchId   Int?
+  
+  permissionOverrides UserPermissionOverride[]
+  glTransactions GeneralLedgerTransaction[]
+
+  @@map("users")
+}
+
+// Junction table for Role to Permissions (Many-to-Many)
+model RolePermission {
+  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  roleId       Int
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+  permissionId Int
+
+  @@id([roleId, permissionId])
+  @@map("role_permissions")
+}
+
+// Junction table for User-specific permission overrides (Many-to-Many)
+model UserPermissionOverride {
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       Int
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+  permissionId Int
+  hasPermission Boolean   // TRUE to grant, FALSE to revoke
+  
+  @@id([userId, permissionId])
+  @@map("user_permission_overrides")
+}
+
+
+// =================================================================
+// Section 2: Core Accounting Models
+// =================================================================
+
+model CostCenter {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  createdAt DateTime @default(now())
+
+  branch   Branch? @relation(fields: [branchId], references: [id], onDelete: Restrict)
+  branchId Int?
+  
+  glTransactions GeneralLedgerTransaction[]
+
+  @@map("cost_centers")
+}
+
+model Account {
+  id              Int      @id @default(autoincrement())
+  accountNumber   String   @unique
+  name            Json     // {"en": "Cash Fund", "ar": "صندوق النقدية"}
+  accountType     String   // Asset, Liability, Equity, Revenue, Expense
+  accountSubType  String?  // Cash, Bank, Receivable, etc.
+  isActive        Boolean  @default(true)
+  
+  parentAccount   Account?  @relation("AccountHierarchy", fields: [parentAccountId], references: [id])
+  parentAccountId Int?
+  childAccounts   Account[] @relation("AccountHierarchy")
+  
+  branch          Branch?   @relation(fields: [branchId], references: [id], onDelete: Restrict)
+  branchId        Int?
+
+  glTransactions GeneralLedgerTransaction[]
+  
+  @@map("accounts")
+}
+
+model GeneralLedgerTransaction {
+  id            BigInt   @id @default(autoincrement())
+  entryDate     DateTime @default(now())
+  description   String
+  debit         Decimal  @default(0.00)
+  credit        Decimal  @default(0.00)
+  
+  // Analytical Dimensions
+  customerId    Int?     // Will be linked to 'customers' table later
+  vehicleId     Int?     // Will be linked to 'vehicles' table later
+  
+  // Relations
+  account       Account    @relation(fields: [accountId], references: [id], onDelete: Restrict)
+  accountId     Int
+  branch        Branch?    @relation(fields: [branchId], references: [id], onDelete: Restrict)
+  branchId      Int?
+  user          User?      @relation(fields: [userId], references: [id], onDelete: Restrict)
+  userId        Int?
+  costCenter    CostCenter?@relation(fields: [costCenterId], references: [id], onDelete: Restrict)
+  costCenterId  Int?
+
+  // Audit Trail
+  sourceModule  String?
+  sourceRecordId Int?
+
+  @@map("general_ledger_transactions")
+}

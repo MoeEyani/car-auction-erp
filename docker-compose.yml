@@ -1,31 +1,44 @@
-version: '3.8'
-
 services:
   db:
-    image: postgres:15
+    image: postgres:16-alpine
     container_name: erp_postgres_db
     restart: always
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_USER: erp_user
-      POSTGRES_PASSWORD: erp_password
-      POSTGRES_DB: erp_database
+      POSTGRES_USER: ${POSTGRES_USER:-erp_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-erp_password}
+      POSTGRES_DB: ${POSTGRES_DB:-erp_database}
       # UTF-8 support for Arabic text
       LC_COLLATE: 'en_US.utf8'
       LC_CTYPE: 'en_US.utf8'
       LANG: 'en_US.utf8'
-      # Set PostgreSQL to use trust authentication for development (VPN-friendly)
-      POSTGRES_HOST_AUTH_METHOD: trust
     volumes:
       - postgres_data:/var/lib/postgresql/data
       # Initialize with UTF-8 and Arabic support
       - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-erp_user}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     command: >
       postgres -c log_statement=all 
                -c log_destination=stderr 
                -c logging_collector=on
                -c max_connections=200
+
+  redis:
+    image: redis:7-alpine
+    container_name: erp_redis
+    restart: always
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   backend:
     build: ./erp-backend
@@ -35,11 +48,17 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=development
+      - DATABASE_URL=postgresql://erp_user:erp_password@erp_postgres_db:5432/erp_database?schema=public
+      - JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
+      - PORT=3000
     volumes:
       - ./erp-backend:/app
       - /app/node_modules
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     command: npm run start:dev
 
 volumes:

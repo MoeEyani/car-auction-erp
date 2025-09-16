@@ -1,9 +1,9 @@
+/* Arabic font support */
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&family=Noto+Sans+Arabic:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* Arabic font support */
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&family=Noto+Sans+Arabic:wght@400;500;600;700&display=swap');
 
 :root {
   font-family: 'Cairo', 'Noto Sans Arabic', system-ui, Avenir, Helvetica, Arial, sans-serif;

@@ -1,44 +1,44 @@
 {
-  "welcome": "Welcome to ERP System",
-  "success": "Operation completed successfully",
-  "error": "An error occurred",
-  "validation": {
-    "required": "This field is required",
-    "invalid": "Invalid value",
-    "minLength": "Minimum length is {{min}} characters",
-    "maxLength": "Maximum length is {{max}} characters"
-  },
-  "auth": {
-    "login": "Login",
-    "logout": "Logout",
-    "register": "Register",
-    "invalidCredentials": "Invalid credentials",
-    "sessionExpired": "Session expired"
-  },
-  "erp": {
-    "accounting": {
-      "accounts": "Accounts",
-      "transactions": "Transactions",
-      "balance": "Balance",
-      "journal": "Journal",
-      "ledger": "Ledger",
-      "trial_balance": "Trial Balance",
-      "profit_loss": "Profit & Loss",
-      "balance_sheet": "Balance Sheet"
-    },
-    "inventory": {
-      "items": "Items",
-      "stock": "Stock",
-      "suppliers": "Suppliers",
-      "purchases": "Purchases",
-      "sales": "Sales"
-    },
-    "auction": {
-      "vehicles": "Vehicles",
-      "auctions": "Auctions",
-      "bids": "Bids",
-      "winners": "Winners",
-      "lots": "Lots"
-    }
-  }
+	"welcome": "Welcome to ERP System",
+	"success": "Operation completed successfully",
+	"error": "An error occurred",
+	"validation": {
+		"required": "This field is required",
+		"invalid": "Invalid value",
+		"minLength": "Minimum length is {{min}} characters",
+		"maxLength": "Maximum length is {{max}} characters"
+	},
+	"auth": {
+		"login": "Login",
+		"logout": "Logout",
+		"register": "Register",
+		"invalidCredentials": "Invalid credentials",
+		"sessionExpired": "Session expired"
+	},
+	"erp": {
+		"accounting": {
+			"accounts": "Accounts",
+			"transactions": "Transactions",
+			"balance": "Balance",
+			"journal": "Journal",
+			"ledger": "Ledger",
+			"trial_balance": "Trial Balance",
+			"profit_loss": "Profit & Loss",
+			"balance_sheet": "Balance Sheet"
+		},
+		"inventory": {
+			"items": "Items",
+			"stock": "Stock",
+			"suppliers": "Suppliers",
+			"purchases": "Purchases",
+			"sales": "Sales"
+		},
+		"auction": {
+			"vehicles": "Vehicles",
+			"auctions": "Auctions",
+			"bids": "Bids",
+			"winners": "Winners",
+			"lots": "Lots"
+		}
+	}
 }
