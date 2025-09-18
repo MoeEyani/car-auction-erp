@@ -1,5 +1,6 @@
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { SimplePermissionGuard } from './auth/SimplePermissionGuard';
 
 // We will create Sidebar and Header components later
 export default function MainLayout() {
@@ -8,10 +9,10 @@ export default function MainLayout() {
   const { logout, user } = useAuth();
 
   const menuItems = [
-    { path: '/dashboard', label: 'لوحة التحكم', icon: '🏠' },
-    { path: '/branches', label: 'الفروع', icon: '🏢' },
-    { path: '/roles', label: 'الأدوار', icon: '👥' },
-    { path: '/users', label: 'المستخدمين', icon: '👤' },
+    { path: '/dashboard', label: 'لوحة التحكم', icon: '🏠', permission: 'view_dashboard' },
+    { path: '/branches', label: 'الفروع', icon: '🏢', permission: 'view_branches' },
+    { path: '/roles', label: 'الأدوار', icon: '👥', permission: 'view_roles' },
+    { path: '/users', label: 'المستخدمين', icon: '👤', permission: 'view_users' },
   ];
 
   const handleLogout = () => {
@@ -31,19 +32,21 @@ export default function MainLayout() {
         <nav className="flex-1">
           <ul className="space-y-2">
             {menuItems.map((item) => (
-              <li key={item.path}>
-                <button
-                  onClick={() => navigate(item.path)}
-                  className={`w-full text-right p-3 rounded flex items-center space-x-3 space-x-reverse transition-colors ${
-                    location.pathname === item.path
-                      ? 'bg-blue-600 text-white'
-                      : 'text-gray-300 hover:bg-gray-700 hover:text-white'
-                  }`}
-                >
-                  <span className="text-lg">{item.icon}</span>
-                  <span>{item.label}</span>
-                </button>
-              </li>
+              <SimplePermissionGuard key={item.path} permission={item.permission} fallback={null}>
+                <li>
+                  <button
+                    onClick={() => navigate(item.path)}
+                    className={`w-full text-right p-3 rounded flex items-center space-x-3 space-x-reverse transition-colors ${
+                      location.pathname === item.path
+                        ? 'bg-blue-600 text-white'
+                        : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+                    }`}
+                  >
+                    <span className="text-lg">{item.icon}</span>
+                    <span>{item.label}</span>
+                  </button>
+                </li>
+              </SimplePermissionGuard>
             ))}
           </ul>
         </nav>
