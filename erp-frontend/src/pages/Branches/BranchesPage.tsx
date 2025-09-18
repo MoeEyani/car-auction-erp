@@ -4,6 +4,8 @@ import { useGetBranches } from './hooks';
 import BranchesTable from './BranchesTable';
 import EmptyState from '../../components/EmptyState';
 import BranchFormModal from './BranchFormModal'; // Import the new modal
+import { PermissionGuard } from '../../components/auth/PermissionGuard';
+import { PermissionNames } from '../../types';
 import type { Branch } from '../../types'; // Import the type
 
 export default function BranchesPage() {
@@ -41,12 +43,14 @@ export default function BranchesPage() {
     <div className="p-6">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-3xl font-bold">إدارة الفروع</h1>
-        <button 
-          className="bg-primary text-white px-4 py-2 rounded hover:bg-primary-hover"
-          onClick={() => handleOpenModal()}
-        >
-          + إضافة فرع جديد
-        </button>
+        <PermissionGuard permission={PermissionNames.MANAGE_BRANCHES}>
+          <button 
+            className="bg-primary text-white px-4 py-2 rounded hover:bg-primary-hover"
+            onClick={() => handleOpenModal()}
+          >
+            + إضافة فرع جديد
+          </button>
+        </PermissionGuard>
       </div>
       
       <div className="mb-4">
@@ -64,11 +68,13 @@ export default function BranchesPage() {
         {renderContent()}
       </div>
 
-      <BranchFormModal 
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-        branchToEdit={branchToEdit}
-      />
+      <PermissionGuard permission={PermissionNames.MANAGE_BRANCHES}>
+        <BranchFormModal 
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          branchToEdit={branchToEdit}
+        />
+      </PermissionGuard>
     </div>
   );
 }

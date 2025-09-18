@@ -8,7 +8,7 @@ const apiClient = axios.create({
   },
 });
 
-// Request interceptor for debugging
+// Request interceptor for debugging and auth
 apiClient.interceptors.request.use(
   (config) => {
     console.log('API Request:', {
@@ -25,7 +25,7 @@ apiClient.interceptors.request.use(
   }
 );
 
-// Response interceptor for debugging
+// Response interceptor for debugging and auth errors
 apiClient.interceptors.response.use(
   (response) => {
     console.log('API Response:', {
@@ -40,6 +40,20 @@ apiClient.interceptors.response.use(
       response: error.response?.data,
       status: error.response?.status,
     });
+
+    // Handle authentication errors
+    if (error.response?.status === 401) {
+      // Clear auth data and redirect to login
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('user');
+      delete apiClient.defaults.headers.common['Authorization'];
+      
+      // Only reload if we're not already on the login page
+      if (!window.location.pathname.includes('/login')) {
+        window.location.reload();
+      }
+    }
+
     return Promise.reject(error);
   }
 );
