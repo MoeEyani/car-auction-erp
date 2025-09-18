@@ -61,9 +61,9 @@ export const UnauthorizedPage: React.FC<UnauthorizedProps> = ({
             <div className="bg-gray-50 rounded-md p-4 mb-6">
               <h3 className="text-sm font-medium text-gray-700 mb-2">معلومات المستخدم:</h3>
               <div className="text-xs text-gray-600 space-y-1">
-                <p><span className="font-medium">الاسم:</span> {user.firstName} {user.lastName}</p>
+                <p><span className="font-medium">الاسم:</span> {user.fullName}</p>
                 <p><span className="font-medium">اسم المستخدم:</span> {user.username}</p>
-                <p><span className="font-medium">الدور:</span> {user.role?.name}</p>
+                <p><span className="font-medium">الدور:</span> {user.role?.name || 'غير محدد'}</p>
               </div>
             </div>
           )}

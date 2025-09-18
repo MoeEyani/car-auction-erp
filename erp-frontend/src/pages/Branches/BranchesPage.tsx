@@ -3,10 +3,9 @@ import { useState } from 'react';
 import { useGetBranches } from './hooks';
 import BranchesTable from './BranchesTable';
 import EmptyState from '../../components/EmptyState';
-import BranchFormModal from './BranchFormModal'; // Import the new modal
-import { PermissionGuard } from '../../components/auth/PermissionGuard';
-import { PermissionNames } from '../../types';
-import type { Branch } from '../../types'; // Import the type
+import BranchFormModal from './BranchFormModal'; 
+import { SimplePermissionGuard } from '../../components/auth/SimplePermissionGuard';
+import type { Branch } from '../../types';
 
 export default function BranchesPage() {
   const [showInactive, setShowInactive] = useState(false);
@@ -40,18 +39,28 @@ export default function BranchesPage() {
   };
 
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-3xl font-bold">إدارة الفروع</h1>
-        <PermissionGuard permission={PermissionNames.MANAGE_BRANCHES}>
-          <button 
-            className="bg-primary text-white px-4 py-2 rounded hover:bg-primary-hover"
-            onClick={() => handleOpenModal()}
-          >
-            + إضافة فرع جديد
-          </button>
-        </PermissionGuard>
-      </div>
+    <SimplePermissionGuard 
+      permission="view_branches" 
+      fallback={
+        <div className="p-6">
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+            <strong>غير مصرح:</strong> ليس لديك صلاحية لمشاهدة الفروع.
+          </div>
+        </div>
+      }
+    >
+      <div className="p-6">
+        <div className="flex justify-between items-center mb-4">
+          <h1 className="text-3xl font-bold">إدارة الفروع</h1>
+          <SimplePermissionGuard permission="manage_branches">
+            <button 
+              className="bg-primary text-white px-4 py-2 rounded hover:bg-primary-hover"
+              onClick={() => handleOpenModal()}
+            >
+              + إضافة فرع جديد
+            </button>
+          </SimplePermissionGuard>
+        </div>
       
       <div className="mb-4">
         <label className="flex items-center space-x-2 rtl:space-x-reverse">
@@ -64,17 +73,18 @@ export default function BranchesPage() {
         </label>
       </div>
 
-      <div className="mt-6">
-        {renderContent()}
-      </div>
+        <div className="mt-6">
+          {renderContent()}
+        </div>
 
-      <PermissionGuard permission={PermissionNames.MANAGE_BRANCHES}>
-        <BranchFormModal 
-          isOpen={isModalOpen}
-          onClose={handleCloseModal}
-          branchToEdit={branchToEdit}
-        />
-      </PermissionGuard>
-    </div>
+        <SimplePermissionGuard permission="manage_branches">
+          <BranchFormModal 
+            isOpen={isModalOpen}
+            onClose={handleCloseModal}
+            branchToEdit={branchToEdit}
+          />
+        </SimplePermissionGuard>
+      </div>
+    </SimplePermissionGuard>
   );
 }

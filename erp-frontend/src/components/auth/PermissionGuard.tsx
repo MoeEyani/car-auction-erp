@@ -26,7 +26,7 @@ export const PermissionGuard: React.FC<PermissionGuardProps> = ({
   fallback = null,
   children,
 }) => {
-  const { hasPermission, hasAnyPermission, hasAllPermissions } = useAuth();
+  const { hasAnyPermission, hasAllPermissions } = useAuth();
 
   // Build permissions array
   const permissionsToCheck = permission ? [permission, ...permissions] : permissions;

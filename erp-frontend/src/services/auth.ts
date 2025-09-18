@@ -53,7 +53,7 @@ export const authService = {
     }
   },
 
-  // Get user permissions
+  // Get user permissions (legacy - for backward compatibility)
   getUserPermissions(): string[] {
     const user = this.getUser();
     if (!user || !user.role || !user.role.permissions) {
@@ -63,19 +63,19 @@ export const authService = {
     return user.role.permissions.map(rp => rp.permission.name);
   },
 
-  // Check if user has specific permission
+  // Check if user has specific permission (legacy)
   hasPermission(permission: string): boolean {
     const permissions = this.getUserPermissions();
     return permissions.includes(permission);
   },
 
-  // Check if user has any of the specified permissions
+  // Check if user has any of the specified permissions (legacy)
   hasAnyPermission(permissions: string[]): boolean {
     const userPermissions = this.getUserPermissions();
     return permissions.some(permission => userPermissions.includes(permission));
   },
 
-  // Check if user has all specified permissions
+  // Check if user has all specified permissions (legacy)
   hasAllPermissions(permissions: string[]): boolean {
     const userPermissions = this.getUserPermissions();
     return permissions.every(permission => userPermissions.includes(permission));

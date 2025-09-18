@@ -1,8 +1,7 @@
 // src/components/layout/Navigation.tsx
 import React from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { usePermissions } from '../../hooks/usePermissions';
-import { PermissionGuard } from '../auth/PermissionGuard';
+import { SimplePermissionGuard } from '../auth/SimplePermissionGuard';
 import { PermissionNames } from '../../types';
 
 interface NavigationProps {
@@ -12,7 +11,6 @@ interface NavigationProps {
 
 export const Navigation: React.FC<NavigationProps> = ({ currentPage, onNavigate }) => {
   const { user, logout } = useAuth();
-  const permissions = usePermissions();
 
   const navigationItems = [
     {
@@ -75,9 +73,9 @@ export const Navigation: React.FC<NavigationProps> = ({ currentPage, onNavigate 
                   );
                 }
                 
-                // إذا كانت هناك صلاحية مطلوبة، استخدم PermissionGuard
+                // إذا كانت هناك صلاحية مطلوبة، استخدم SimplePermissionGuard
                 return (
-                  <PermissionGuard key={item.id} permission={item.permission}>
+                  <SimplePermissionGuard key={item.id} permission={item.permission} fallback={null}>
                     <button
                       onClick={() => onNavigate(item.id)}
                       className={`${
@@ -88,7 +86,7 @@ export const Navigation: React.FC<NavigationProps> = ({ currentPage, onNavigate 
                     >
                       {item.label}
                     </button>
-                  </PermissionGuard>
+                  </SimplePermissionGuard>
                 );
               })}
             </div>
@@ -133,9 +131,9 @@ export const Navigation: React.FC<NavigationProps> = ({ currentPage, onNavigate 
               );
             }
             
-            // إذا كانت هناك صلاحية مطلوبة، استخدم PermissionGuard
+            // إذا كانت هناك صلاحية مطلوبة، استخدم SimplePermissionGuard
             return (
-              <PermissionGuard key={item.id} permission={item.permission}>
+              <SimplePermissionGuard key={item.id} permission={item.permission} fallback={null}>
                 <button
                   onClick={() => onNavigate(item.id)}
                   className={`${
@@ -146,7 +144,7 @@ export const Navigation: React.FC<NavigationProps> = ({ currentPage, onNavigate 
                 >
                   {item.label}
                 </button>
-              </PermissionGuard>
+              </SimplePermissionGuard>
             );
           })}
         </div>

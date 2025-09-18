@@ -1,9 +1,10 @@
 // src/pages/Branches/BranchesTable.tsx
 import type { Branch } from '../../types';
+import { SimplePermissionGuard } from '../../components/auth/SimplePermissionGuard';
 
 interface BranchesTableProps {
   branches: Branch[];
-  onEdit: (branch: Branch) => void; // Add this prop
+  onEdit: (branch: Branch) => void;
 }
 
 export default function BranchesTable({ branches, onEdit }: BranchesTableProps) {
@@ -31,7 +32,14 @@ export default function BranchesTable({ branches, onEdit }: BranchesTableProps) 
                 )}
               </td>
               <td className="py-2 px-4 border-b">
-                <button onClick={() => onEdit(branch)} className="text-primary hover:underline">تعديل</button>
+                <SimplePermissionGuard 
+                  permission="manage_branches"
+                  fallback={<span className="text-gray-400">لا يمكن التعديل</span>}
+                >
+                  <button onClick={() => onEdit(branch)} className="text-primary hover:underline">
+                    تعديل
+                  </button>
+                </SimplePermissionGuard>
               </td>
             </tr>
           ))}
