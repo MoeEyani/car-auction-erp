@@ -6,6 +6,9 @@ import LoginPage from './pages/Auth/LoginPage';
 import BranchesPage from './pages/Branches/BranchesPage';
 import RolesPage from './pages/Roles/RolesPage';
 import UsersPage from './pages/Users/UsersPage';
+import PermissionsPage from './pages/Permissions/PermissionsPage';
+import ActivitiesPage from './pages/Activities/ActivitiesPage';
+import { PerformanceDashboard } from './pages/Performance';
 import DashboardPage from './pages/Dashboard/DashboardPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import MainLayout from './components/MainLayout';
@@ -17,7 +20,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <div dir="rtl">
+        <div>
           <Toaster position="bottom-center" />
           <BrowserRouter>
             <Routes>
@@ -29,6 +32,9 @@ function App() {
                   <Route path="/branches" element={<BranchesPage />} />
                   <Route path="/roles" element={<RolesPage />} />
                   <Route path="/users" element={<UsersPage />} />
+                  <Route path="/permissions" element={<PermissionsPage />} />
+                  <Route path="/activities" element={<ActivitiesPage />} />
+                  <Route path="/performance" element={<PerformanceDashboard />} />
                 </Route>
               </Route>
               <Route path="*" element={<div>404 Not Found</div>} />

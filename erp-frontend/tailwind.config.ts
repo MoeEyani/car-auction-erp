@@ -1,8 +1,19 @@
-/** @type {import('tailwindcss').Config} */
+import type { Config } from 'tailwindcss';
+
 export default {
-  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  darkMode: 'class',
+  content: ['./index.html', './src/**/*.{ts,tsx,js,jsx}'],
   theme: {
     extend: {
+      container: {
+        center: true,
+        padding: '1rem',
+        screens: {
+          lg: '1024px',
+          xl: '1280px',
+          '2xl': '1440px'
+        }
+      },
       colors: {
         primary: {
           DEFAULT: '#3B82F6', // blue-500
@@ -19,14 +30,6 @@ export default {
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
-        primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
-        },
-        secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
-        },
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
@@ -56,11 +59,7 @@ export default {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
-      animation: {
-        "accordion-down": "accordion-down 0.2s ease-out",
-        "accordion-up": "accordion-up 0.2s ease-out",
-      },
     },
   },
   plugins: [],
-}
+} satisfies Config;

@@ -21,7 +21,21 @@ export interface Role {
   name: string;
   description?: string;
   permissions: RolePermission[];
+  level: RoleLevelType; // مستوى الدور
+  createdAt: string;
+  updatedAt: string;
 }
+
+export const RoleLevel = {
+  SUPER_ADMIN: 1,    // مدير عام - أعلى مستوى
+  ADMIN: 2,          // مدير
+  MANAGER: 3,        // مدير قسم
+  SUPERVISOR: 4,     // مشرف
+  EMPLOYEE: 5,       // موظف
+  GUEST: 6           // ضيف - أقل مستوى
+} as const;
+
+export type RoleLevelType = typeof RoleLevel[keyof typeof RoleLevel];
 
 export interface Permission {
   id: number;
