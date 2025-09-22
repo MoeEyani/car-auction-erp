@@ -1,10 +1,11 @@
 // src/pages/Roles/RolesPage.tsx
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Shield, Plus, Loader2, AlertCircle } from 'lucide-react';
+import { Shield, Plus, Loader2, AlertCircle, Settings } from 'lucide-react';
 import { useRoles } from './hooks';
 import RolesTable from './RolesTable';
 import RoleFormModal from './RoleFormModal';
+import TemplateManager from './components/TemplateManager';
 import { SimplePermissionGuard } from '../../components/auth/SimplePermissionGuard';
 import { Card, CardContent, CardDescription, CardTitle } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
@@ -12,6 +13,7 @@ import type { Role } from './hooks';
 
 export default function RolesPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isTemplateManagerOpen, setIsTemplateManagerOpen] = useState(false);
   const [selectedRole, setSelectedRole] = useState<Role | null>(null);
   const { data: roles, isLoading, error } = useRoles();
 
@@ -119,7 +121,7 @@ export default function RolesPage() {
             <p className="text-gray-600 mt-1 text-right">إدارة الأدوار وتخصيص الصلاحيات</p>
           </div>
           <SimplePermissionGuard permission="manage_roles">
-            <motion.div variants={itemVariants}>
+            <motion.div variants={itemVariants} className="flex gap-3">
               <Button
                 onClick={() => setIsModalOpen(true)}
                 className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
@@ -127,6 +129,16 @@ export default function RolesPage() {
                 <Plus className="w-5 h-5 ml-2" />
                 إضافة دور جديد
               </Button>
+              <SimplePermissionGuard permission="system_admin">
+                <Button
+                  onClick={() => setIsTemplateManagerOpen(true)}
+                  variant="outline"
+                  className="border-purple-300 text-purple-700 hover:bg-purple-50"
+                >
+                  <Settings className="w-5 h-5 ml-2" />
+                  إدارة القوالب
+                </Button>
+              </SimplePermissionGuard>
             </motion.div>
           </SimplePermissionGuard>
         </motion.div>
@@ -157,6 +169,14 @@ export default function RolesPage() {
             isOpen={isModalOpen}
             onClose={handleCloseModal}
             role={selectedRole}
+          />
+        </SimplePermissionGuard>
+
+        {/* Template Manager Modal */}
+        <SimplePermissionGuard permission="system_admin">
+          <TemplateManager
+            isOpen={isTemplateManagerOpen}
+            onClose={() => setIsTemplateManagerOpen(false)}
           />
         </SimplePermissionGuard>
       </motion.div>

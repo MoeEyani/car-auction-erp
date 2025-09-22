@@ -11,6 +11,15 @@ export interface Permission {
   category: string;
 }
 
+export interface RoleTemplate {
+  id: string;
+  name: string;
+  description: string;
+  category: 'management' | 'operations' | 'support' | 'finance';
+  permissions: string[];
+  branchScope: 'global' | 'branch';
+}
+
 export interface Role {
   id: number;
   name: string;
@@ -24,12 +33,14 @@ export interface CreateRoleDto {
   name: string;
   description: string;
   permissionIds: number[];
+  templateId?: string;
 }
 
 export interface UpdateRoleDto {
   name?: string;
   description?: string;
   permissionIds?: number[];
+  templateId?: string;
 }
 
 // Hooks for roles
@@ -50,6 +61,27 @@ export const usePermissions = () => {
       const response = await apiClient.get('/roles/permissions');
       return response.data;
     },
+  });
+};
+
+export const useRoleTemplates = () => {
+  return useQuery({
+    queryKey: ['role-templates'],
+    queryFn: async () => {
+      const response = await apiClient.get('/roles/templates');
+      return response.data as RoleTemplate[];
+    },
+  });
+};
+
+export const useRoleTemplate = (templateId: string) => {
+  return useQuery({
+    queryKey: ['role-template', templateId],
+    queryFn: async () => {
+      const response = await apiClient.get(`/roles/templates/${templateId}`);
+      return response.data as RoleTemplate;
+    },
+    enabled: !!templateId,
   });
 };
 

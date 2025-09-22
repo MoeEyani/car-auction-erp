@@ -87,6 +87,16 @@ export default function MainLayout() {
 
   return (
     <div className="flex h-screen bg-gradient-to-br from-gray-50 to-gray-100" dir="rtl">
+      {/* Hamburger Menu Button */}
+      <Button
+        variant="ghost"
+        size="icon"
+        className="fixed top-4 right-4 z-50 bg-white shadow-lg hover:bg-gray-50 text-gray-700"
+        onClick={() => setSidebarOpen(!sidebarOpen)}
+      >
+        {sidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+      </Button>
+
       {/* Mobile Overlay */}
       <AnimatePresence>
         {sidebarOpen && (
@@ -95,20 +105,23 @@ export default function MainLayout() {
             animate="open"
             exit="closed"
             variants={overlayVariants}
-            className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+            className="fixed inset-0 bg-black bg-opacity-50 z-40"
             onClick={() => setSidebarOpen(false)}
           />
         )}
       </AnimatePresence>
 
       {/* Sidebar */}
-      <motion.div
-        initial={false}
-        animate={sidebarOpen ? "open" : "closed"}
-        variants={sidebarVariants}
-        className="fixed lg:static inset-y-0 right-0 z-50 w-72 bg-gradient-to-b from-blue-900 via-blue-800 to-blue-900 text-white shadow-2xl lg:shadow-none"
-      >
-        <div className="flex flex-col h-full">
+      <AnimatePresence>
+        {sidebarOpen && (
+          <motion.div
+            initial="closed"
+            animate="open"
+            exit="closed"
+            variants={sidebarVariants}
+            className="fixed inset-y-0 right-0 z-50 w-72 bg-gradient-to-b from-blue-900 via-blue-800 to-blue-900 text-white shadow-2xl"
+          >
+            <div className="flex flex-col h-full">
           {/* Header */}
           <div className="p-6 border-b border-blue-700">
             <div className="flex items-center justify-between lg:justify-center">
@@ -219,6 +232,8 @@ export default function MainLayout() {
           </motion.div>
         </div>
       </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
@@ -230,17 +245,7 @@ export default function MainLayout() {
           className="bg-white shadow-lg border-b border-gray-200 px-6 py-4"
         >
           <div className="flex justify-between items-center">
-            {/* Mobile Menu Button */}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="lg:hidden"
-              onClick={() => setSidebarOpen(true)}
-            >
-              <Menu className="w-5 h-5" />
-            </Button>
-
-            <div className="flex items-center space-x-4 space-x-reverse flex-1 lg:flex-none">
+            <div className="flex items-center space-x-4 space-x-reverse flex-1">
               <motion.h2
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}

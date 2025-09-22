@@ -19,7 +19,12 @@ INSERT INTO permissions (name, description, module) VALUES
 ('manage_auctions', 'Create, edit, and delete auctions', 'Auctions'),
 ('view_auctions', 'View auction information', 'Auctions'),
 ('manage_accounting', 'Create and edit financial transactions', 'Accounting'),
-('view_reports', 'View financial and business reports', 'Reports');
+('view_reports', 'View financial and business reports', 'Reports'),
+('manage_branches', 'Create, edit, and delete branches', 'Branches'),
+('view_all_branches', 'View all branches (super admin only)', 'Branches'),
+('view_all_users', 'View users from all branches (super admin only)', 'Users'),
+('manage_all_users', 'Manage users from all branches (super admin only)', 'Users'),
+('super_admin_access', 'Full system access across all branches', 'System');
 
 -- Insert sample roles
 INSERT INTO roles (name, description, is_system_role) VALUES

@@ -3,13 +3,14 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useCreateRole, useUpdateRole, usePermissions } from './hooks';
-import type { Role, Permission } from './hooks';
+import { useCreateRole, useUpdateRole, usePermissions, useRoleTemplates } from './hooks';
+import type { Role, Permission, RoleTemplate } from './hooks';
 
 const roleSchema = z.object({
   name: z.string().min(1, 'اسم الدور مطلوب'),
   description: z.string().min(1, 'وصف الدور مطلوب'),
   permissionIds: z.array(z.number()).min(1, 'يجب اختيار صلاحية واحدة على الأقل'),
+  templateId: z.string().optional(),
 });
 
 type RoleFormData = z.infer<typeof roleSchema>;
@@ -22,7 +23,10 @@ interface RoleFormModalProps {
 
 export default function RoleFormModal({ isOpen, onClose, role }: RoleFormModalProps) {
   const [selectedPermissions, setSelectedPermissions] = useState<number[]>([]);
+  const [selectedTemplate, setSelectedTemplate] = useState<string>('');
+  const [useTemplate, setUseTemplate] = useState<boolean>(false);
   const { data: permissions, isLoading: permissionsLoading } = usePermissions();
+  const { data: templates, isLoading: templatesLoading } = useRoleTemplates();
   const createRole = useCreateRole();
   const updateRole = useUpdateRole();
 
@@ -43,11 +47,48 @@ export default function RoleFormModal({ isOpen, onClose, role }: RoleFormModalPr
       const permissionIds = role.permissions.map(p => p.permission.id);
       setSelectedPermissions(permissionIds);
       setValue('permissionIds', permissionIds);
+      setUseTemplate(false);
+      setSelectedTemplate('');
     } else {
       reset();
       setSelectedPermissions([]);
+      setUseTemplate(false);
+      setSelectedTemplate('');
     }
   }, [role, reset, setValue]);
+
+  const handleTemplateSelection = (templateId: string) => {
+    setSelectedTemplate(templateId);
+    setValue('templateId', templateId);
+    
+    if (templateId && templates) {
+      const template = templates.find(t => t.id === templateId);
+      if (template) {
+        setValue('name', template.name);
+        setValue('description', template.description);
+        
+        // Find permission IDs that match template permission names
+        const templatePermissionIds = permissions?.filter((p: Permission) => 
+          template.permissions.includes(p.name)
+        ).map((p: Permission) => p.id) || [];
+        
+        setSelectedPermissions(templatePermissionIds);
+        setValue('permissionIds', templatePermissionIds);
+      }
+    }
+  };
+
+  const handleUseTemplateToggle = (checked: boolean) => {
+    setUseTemplate(checked);
+    if (!checked) {
+      setSelectedTemplate('');
+      setValue('templateId', undefined);
+      setValue('name', '');
+      setValue('description', '');
+      setSelectedPermissions([]);
+      setValue('permissionIds', []);
+    }
+  };
 
   const handlePermissionChange = (permissionId: number) => {
     const newSelectedPermissions = selectedPermissions.includes(permissionId)
@@ -129,9 +170,63 @@ export default function RoleFormModal({ isOpen, onClose, role }: RoleFormModalPr
               )}
             </div>
 
+            {!role && (
+              <div className="border-t pt-4">
+                <div className="flex items-center mb-4">
+                  <input
+                    type="checkbox"
+                    id="useTemplate"
+                    checked={useTemplate}
+                    onChange={(e) => handleUseTemplateToggle(e.target.checked)}
+                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                  />
+                  <label htmlFor="useTemplate" className="mr-2 text-sm font-medium text-gray-700">
+                    استخدام قالب دور محدد مسبقاً
+                  </label>
+                </div>
+
+                {useTemplate && (
+                  <div className="mb-4">
+                    <label htmlFor="template" className="block text-sm font-medium text-gray-700">
+                      اختر قالب الدور
+                    </label>
+                    <select
+                      value={selectedTemplate}
+                      onChange={(e) => handleTemplateSelection(e.target.value)}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border"
+                    >
+                      <option value="">اختر قالب...</option>
+                      {templates && Object.entries(
+                        templates.reduce((acc: Record<string, RoleTemplate[]>, template) => {
+                          if (!acc[template.category]) {
+                            acc[template.category] = [];
+                          }
+                          acc[template.category].push(template);
+                          return acc;
+                        }, {})
+                      ).map(([category, categoryTemplates]) => (
+                        <optgroup key={category} label={
+                          category === 'management' ? 'الإدارة' :
+                          category === 'operations' ? 'العمليات' :
+                          category === 'support' ? 'الدعم' :
+                          category === 'finance' ? 'المالية' : category
+                        }>
+                          {categoryTemplates.map((template) => (
+                            <option key={template.id} value={template.id}>
+                              {template.name} - {template.description}
+                            </option>
+                          ))}
+                        </optgroup>
+                      ))}
+                    </select>
+                  </div>
+                )}
+              </div>
+            )}
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                الصلاحيات
+                {useTemplate ? 'الصلاحيات المحددة (يمكن تعديلها)' : 'الصلاحيات'}
               </label>
               {permissionsLoading ? (
                 <div className="text-gray-500">جاري تحميل الصلاحيات...</div>

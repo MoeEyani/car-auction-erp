@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import toast from 'react-hot-toast';
 import { useCreateUser, useUpdateUser, useBranches, useRolesForUsers } from './hooks';
 import type { User } from './hooks';
 
@@ -10,7 +11,7 @@ const userSchema = z.object({
   username: z.string().min(1, 'اسم المستخدم مطلوب'),
   fullName: z.string().min(1, 'الاسم الكامل مطلوب'),
   email: z.string().email('البريد الإلكتروني غير صحيح').optional().or(z.literal('')),
-  password: z.string().min(6, 'كلمة المرور يجب أن تكون 6 أحرف على الأقل').optional().or(z.literal('')),
+  password: z.string().optional().or(z.literal('')),
   roleId: z.number().min(1, 'الدور مطلوب'),
   branchId: z.number().optional(),
   preferredLanguage: z.enum(['ar', 'en']),
@@ -63,6 +64,18 @@ export default function UserFormModal({ isOpen, onClose, user }: UserFormModalPr
   }, [user, reset, setValue]);
 
   const onSubmit = (data: UserFormData) => {
+    // Validate password for new users
+    if (!user && (!data.password || data.password.length < 6)) {
+      toast.error('كلمة المرور مطلوبة ويجب أن تكون 6 أحرف على الأقل');
+      return;
+    }
+    
+    // Validate password length if provided for existing users
+    if (user && data.password && data.password.length > 0 && data.password.length < 6) {
+      toast.error('كلمة المرور يجب أن تكون 6 أحرف على الأقل');
+      return;
+    }
+
     // Clean up data
     const cleanedData = {
       ...data,
@@ -90,6 +103,7 @@ export default function UserFormModal({ isOpen, onClose, user }: UserFormModalPr
     } else {
       // For create, password is required
       if (!cleanedData.password) {
+        toast.error('كلمة المرور مطلوبة');
         return;
       }
       

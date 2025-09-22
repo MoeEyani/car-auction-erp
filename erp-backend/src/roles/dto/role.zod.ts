@@ -5,6 +5,7 @@ export const createRoleSchema = z.object({
   name: z.string().min(1, 'Role name is required').max(100, 'Role name must be less than 100 characters'),
   description: z.string().optional(),
   permissionIds: z.array(z.number().int().positive()).optional(),
+  templateId: z.string().optional(), // For using predefined role templates
 });
 
 export const updateRoleSchema = createRoleSchema.partial();
